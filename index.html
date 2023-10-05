@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>to-do list</title>
+    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <div>
+        <input class="input" type="text" id="task" placeholder="Add Task">
+        <button class="button" onclick="AddNewTask()">Add</button>
+    </div>
+    <div class="task_shelf">
+        <p class="My_list_name">My to-do list:</p>
+        <div id="taskList" class="task-list">
+        </div>
+    </div>
+    <div>
+        <button class="button" onclick="confirmDelete()">Delete All</button>
+        <button class="button" onclick="delete_task_done()">Delete the tasks done</button>
+    </div>
+</body>
+</html>
