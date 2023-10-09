@@ -1,8 +1,66 @@
-class Task {
+class TodoItem {
     constructor(task) {
         this.task = task;
         this.completed = false;
         this.createdAt = new Date();
+    }
+
+    display() {
+        const taskList = document.getElementById("taskList");
+        const index = shelf.tasks.indexOf(this);
+
+        const taskItem = document.createElement("div");
+        taskItem.classList.add("task");
+
+        taskItem.addEventListener("dblclick", function () {
+            editTask(index);
+        });
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = this.completed;
+        checkbox.addEventListener("change", () => {
+            this.completed = checkbox.checked;
+        });
+
+        const taskText = document.createElement("span");
+        taskText.classList.add("taskText");
+        taskText.id = `taskText${index}`;
+        taskText.textContent = this.task;
+
+        const taskTime = document.createElement("span");
+        taskTime.classList.add("taskTime");
+        taskTime.id = `taskTime${index}`;
+        taskTime.textContent = this.createdAt.toLocaleString();
+
+        taskItem.appendChild(checkbox);
+        taskItem.appendChild(taskText);
+        taskItem.appendChild(document.createTextNode(" (Created: "));
+        taskItem.appendChild(taskTime);
+        taskItem.appendChild(document.createTextNode(")"));
+
+        taskList.appendChild(taskItem);
+    }
+}
+
+class TodoItemPremium extends TodoItem {
+    constructor(task, iconUrl) {
+        super(task);
+        this.iconUrl = iconUrl;
+    }
+
+    display() {
+        super.display();
+
+        const index = shelf.tasks.indexOf(this);
+        const icon = document.createElement("img");
+        icon.style.width = "300px"; 
+        icon.style.height = "300px";
+        icon.src = this.iconUrl;
+        icon.classList.add("taskIcon");
+
+        const taskItem = document.getElementsByClassName("task")[index];
+        taskItem.insertBefore(icon, taskItem.firstChild);
     }
 }
 
@@ -10,6 +68,7 @@ class All_Tasks {
     constructor(tasks = []) {
         this.tasks = tasks;
     }
+
     addTask(task) {
         this.tasks.push(task);
     }
@@ -29,66 +88,53 @@ class All_Tasks {
     }
 }
 
+
+let sortOrder = 'descending'; 
+
+
+function sortAscending() {
+    sortOrder = 'ascending';
+    DisplayTasks(shelf.tasks);
+}
+
+function sortDescending() {
+    sortOrder = 'descending';
+    DisplayTasks(shelf.tasks);
+}
+
 function DisplayTasks(tasks) {
     const taskList = document.getElementById("taskList");
     taskList.innerHTML = "";
 
-    tasks.sort((a, b) => b.createdAt - a.createdAt);
+    if (sortOrder === 'ascending') {
+        tasks.sort((a, b) => a.createdAt - b.createdAt);
+    } else if (sortOrder === 'descending') {
+        tasks.sort((a, b) => b.createdAt - a.createdAt);
+    }
 
-    tasks.forEach((task, index) => {
-        const taskItem = document.createElement("div");
-        taskItem.classList.add("task");
-
-        taskItem.addEventListener("dblclick", function () {
-            editTask(tasks.indexOf(task));
-        });
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = task.completed;
-        checkbox.addEventListener("change", function () {
-            task.completed = checkbox.checked;
-        });
-
-        const taskText = document.createElement("span");
-        taskText.classList.add("taskText");
-        taskText.id = `taskText${index}`;
-        taskText.textContent = task.task;
-
-        const taskTime = document.createElement("span");
-        taskTime.classList.add("taskTime");
-        taskTime.id = `taskTime${index}`;
-        taskTime.textContent = task.createdAt.toLocaleString();
-
-        taskItem.appendChild(checkbox);
-        taskItem.appendChild(taskText);
-        taskItem.appendChild(document.createTextNode(" (Created: "));
-        taskItem.appendChild(taskTime);
-        taskItem.appendChild(document.createTextNode(")"));
-
-        taskList.appendChild(taskItem);
+    tasks.forEach((task) => {
+        task.display();
     });
 }
 
-
-
-
-
-
-
+function toggleSortOrder() {
+    sortOrder = sortOrder === 'ascending' ? 'descending' : 'ascending';
+    DisplayTasks(shelf.tasks);
+}
 
 
 function AddNewTask() {
     const taskInput = document.getElementById("task");
     const task = taskInput.value.trim();
+    const iconUrl = "https://i.pinimg.com/564x/75/ee/12/75ee12d6e67c82af75d5b9c24baac546.jpg";
 
     if (task !== "") {
-        const newTask = new Task(task);
-        shelf.addTask(newTask);
+        const newPremiumTask = new TodoItemPremium(task, iconUrl);
+        shelf.addTask(newPremiumTask);
         DisplayTasks(shelf.tasks);
         taskInput.value = "";
     } else {
-        alert("Add the text!");
+        alert("Додайте текст завдання!");
     }
 }
 
