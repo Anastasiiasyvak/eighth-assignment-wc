@@ -134,7 +134,7 @@ function AddNewTask() {
         DisplayTasks(shelf.tasks);
         taskInput.value = "";
     } else {
-        alert("Додайте текст завдання!");
+        alert("Add task!");
     }
 }
 
@@ -203,6 +203,26 @@ function delete_task_done() {
 
     DisplayTasks(shelf.tasks);
 }
+
+function pickRandomTask() {
+    const taskItems = document.querySelectorAll(".task");
+    
+    if (taskItems.length === 0) {
+        alert("No tasks available.");
+        return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * taskItems.length);
+
+    const highlightedTask = document.querySelector(".highlighted");
+    if (highlightedTask) {
+        highlightedTask.classList.remove("highlighted");
+    }
+
+    taskItems[randomIndex].classList.add("highlighted");
+}
+
+
 
 const shelf = new All_Tasks([]);
 DisplayTasks(shelf.tasks);
