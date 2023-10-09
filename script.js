@@ -59,11 +59,16 @@ function DisplayTasks(tasks) {
 
 function AddNewTask() {
     const taskInput = document.getElementById("task");
-    const task = taskInput.value;
-    const newTask = new Task(task);
-    shelf.addTask(newTask);
-    DisplayTasks(shelf.tasks);
-    taskInput.value = "";
+    const task = taskInput.value.trim();
+
+    if (task !== "") {
+        const newTask = new Task(task);
+        shelf.addTask(newTask);
+        DisplayTasks(shelf.tasks);
+        taskInput.value = "";
+    } else {
+        alert("Add the text!");
+    }
 }
 
 function confirmDelete() {
