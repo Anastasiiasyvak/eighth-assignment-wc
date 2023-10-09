@@ -35,25 +35,46 @@ function DisplayTasks(tasks) {
 
     tasks.sort((a, b) => b.createdAt - a.createdAt);
 
-    tasks.forEach(task => {
+    tasks.forEach((task, index) => {
         const taskItem = document.createElement("div");
         taskItem.classList.add("task");
 
-        taskItem.innerHTML = `
-            <p ${task.completed ? 'style="text-decoration: line-through;"' : ''}>
-                <span id="taskText">${task.task}</span> (Created: <span id="taskTime">${task.createdAt.toLocaleString()}</span>)
-            </p>
-            <button class="button1" onclick="removeTask('${task.task}')">remove this task</button>
-            <button class="button2" onclick="changeStatus('${task.task}')">Change status</button>
-        `;
-
         taskItem.addEventListener("dblclick", function () {
-            editTask(task.task);
+            editTask(tasks.indexOf(task));
         });
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.addEventListener("change", function () {
+            task.completed = checkbox.checked;
+        });
+
+        const taskText = document.createElement("span");
+        taskText.classList.add("taskText");
+        taskText.id = `taskText${index}`;
+        taskText.textContent = task.task;
+
+        const taskTime = document.createElement("span");
+        taskTime.classList.add("taskTime");
+        taskTime.id = `taskTime${index}`;
+        taskTime.textContent = task.createdAt.toLocaleString();
+
+        taskItem.appendChild(checkbox);
+        taskItem.appendChild(taskText);
+        taskItem.appendChild(document.createTextNode(" (Created: "));
+        taskItem.appendChild(taskTime);
+        taskItem.appendChild(document.createTextNode(")"));
 
         taskList.appendChild(taskItem);
     });
 }
+
+
+
+
+
+
 
 
 
@@ -87,7 +108,7 @@ function removeTask(taskText) {
     }
 }
 
-function changeStatus(taskText, button) {
+function changeStatus(taskText) {
     const taskToChange = shelf.tasks.find(task => task.task === taskText);
     if (taskToChange) {
         taskToChange.completed = !taskToChange.completed;
@@ -95,12 +116,12 @@ function changeStatus(taskText, button) {
     }
 }
 
-function editTask(taskText) {
-    const taskToEdit = shelf.tasks.find(task => task.task === taskText);
+function editTask(index) {
+    const taskToEdit = shelf.tasks[index];
 
     if (taskToEdit) {
-        const taskTextElement = document.getElementById("taskText");
-        const taskTimeElement = document.getElementById("taskTime");
+        const taskTextElement = document.getElementById(`taskText${index}`);
+        const taskTimeElement = document.getElementById(`taskTime${index}`);
 
         const originalText = taskTextElement.textContent;
         const originalTime = taskTimeElement.textContent;
